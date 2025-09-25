@@ -1,19 +1,26 @@
 package main
 
 import (
-	"help_desk/models"
+	"help_desk/database"
+	"help_desk/handlers"
+	"log"
 
-	"gorm.io/driver/postgres"
-	"gorm.io/gorm"
+	"github.com/gofiber/fiber/v2"
+	"github.com/joho/godotenv"
 )
 
 func main() {
-	dsn := "host=localhost user=problems password=1 dbname=problems port=5432 sslmode=disable "
-	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	// Load environment variables from .env file
+	err := godotenv.Load()
 	if err != nil {
-		panic("failed to connect database")
+		log.Fatal("Error loading .env file")
 	}
 
-	// Migrate the schema
-	db.AutoMigrate(&models.FaultReport{}) // tabloyu otomatik oluşturur
+	database.InitDB()
+
+	app := fiber.New()
+
+	app.Post("/faultreports", handlers.CreateFaultReport)
+
+	app.Listen(":3000")
 }
