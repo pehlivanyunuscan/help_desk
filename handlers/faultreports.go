@@ -31,6 +31,7 @@ func CreateFaultReport(c *fiber.Ctx) error {
 		Timestamp:       timestamp,
 		MachineID:       input.MachineID,
 		ReportedBy:      "system", // Varsayılan olarak "system" atandı, gerçek kullanıcı bilgisi eklenebilir
+		Asset:           input.Asset,
 	}
 	if err := database.DB.Create(&report).Error; err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
@@ -38,7 +39,19 @@ func CreateFaultReport(c *fiber.Ctx) error {
 		})
 	}
 
-	return c.Status(fiber.StatusCreated).JSON(report)
+	return c.Status(fiber.StatusCreated).JSON(fiber.Map{
+		"message": "Fault report created successfully",
+		"report": fiber.Map{
+			"id":               report.ID,
+			"title":            report.Title,
+			"asset":            report.Asset,
+			"machine_id":       report.MachineID,
+			"priority":         report.Priority,
+			"user_description": report.UserDescription,
+			"timestamp":        report.Timestamp,
+			"reported_by":      report.ReportedBy,
+		},
+	})
 }
 
 func GetFaultReports(c *fiber.Ctx) error {
