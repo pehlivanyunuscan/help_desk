@@ -9,6 +9,8 @@ import (
 	"gorm.io/gorm"
 )
 
+var DB *gorm.DB
+
 func InitDB() {
 	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable",
 		os.Getenv("DB_HOST"),
@@ -22,6 +24,8 @@ func InitDB() {
 	if err != nil {
 		panic("failed to connect database")
 	}
+
+	DB = db
 
 	db.AutoMigrate(&models.FaultReport{}) // tabloyu otomatik oluşturur
 }
