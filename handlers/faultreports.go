@@ -8,17 +8,8 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-// Gelen istek için kullanılacak yapı
-type CreateFaultReportRequest struct {
-	Title           string `json:"title"`
-	UserDescription string `json:"user_description"`
-	Clock           int64  `json:"clock"`
-	MachineID       string `json:"machine_id"`
-	Asset           string `json:"asset"`
-}
-
 func CreateFaultReport(c *fiber.Ctx) error {
-	var input CreateFaultReportRequest
+	var input models.CreateFaultReportRequest
 	if err := c.BodyParser(&input); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"error": "Cannot parse JSON",
@@ -39,6 +30,7 @@ func CreateFaultReport(c *fiber.Ctx) error {
 		UserDescription: input.UserDescription,
 		Timestamp:       timestamp,
 		MachineID:       input.MachineID,
+		ReportedBy:      "system", // Varsayılan olarak "system" atandı, gerçek kullanıcı bilgisi eklenebilir
 	}
 	if err := database.DB.Create(&report).Error; err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
@@ -47,4 +39,25 @@ func CreateFaultReport(c *fiber.Ctx) error {
 	}
 
 	return c.Status(fiber.StatusCreated).JSON(report)
+}
+
+func GetFaultReports(c *fiber.Ctx) error {
+	var reports []models.FaultReport
+	if err := database.DB.Find(&reports).Error; err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": "Could not retrieve fault reports",
+		})
+	}
+	return c.JSON(reports)
+}
+
+func GetFaultReportByID(c *fiber.Ctx) error {
+	id := c.Params("id")
+	var report models.FaultReport
+	if err := database.DB.First(&report, id).Error; err != nil {
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
+			"error": "Fault report not found",
+		})
+	}
+	return c.JSON(report)
 }

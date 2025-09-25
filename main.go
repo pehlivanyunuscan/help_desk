@@ -20,7 +20,9 @@ func main() {
 
 	app := fiber.New()
 
-	app.Post("/faultreports", handlers.CreateFaultReport)
+	app.Post("/send_helpdesk", handlers.CreateFaultReport)
+	app.Get("/get_faultreports", handlers.GetFaultReports)
+	app.Get("/get_faultreport/:id", handlers.GetFaultReportByID)
 
 	app.Listen(":3000")
 }
