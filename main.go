@@ -3,6 +3,7 @@ package main
 import (
 	"help_desk/database"
 	"help_desk/handlers"
+	"help_desk/middleware"
 	"log"
 
 	"github.com/gofiber/fiber/v2"
@@ -20,7 +21,9 @@ func main() {
 
 	app := fiber.New()
 
-	app.Post("/send_helpdesk", handlers.CreateFaultReport)
+	app.Post("/login", handlers.Login)
+
+	app.Post("/send_helpdesk", middleware.RequireAuth, handlers.CreateFaultReport)
 	app.Get("/get_faultreports", handlers.GetFaultReports)
 	app.Get("/get_faultreport/:id", handlers.GetFaultReportByID)
 

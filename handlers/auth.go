@@ -20,7 +20,7 @@ type LoginResponse struct {
 	ExpiresAt time.Time `json:"expires_at"`
 }
 
-func loging(c *fiber.Ctx) error {
+func Login(c *fiber.Ctx) error {
 	// Placeholder implementation
 	var req LoginRequest
 	if err := c.BodyParser(&req); err != nil {

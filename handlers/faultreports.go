@@ -25,12 +25,19 @@ func CreateFaultReport(c *fiber.Ctx) error {
 	// clock alanını time.Time türüne dönüştürür
 	timestamp := time.Unix(input.Clock, 0)
 
+	// JWT ile gelen kullanıcı bilgilerini al
+	userIface := c.Locals("user")
+	username := "system"
+	if user, ok := userIface.(models.User); ok {
+		username = user.Username
+	}
+
 	report := models.FaultReport{
 		Title:           input.Title,
 		UserDescription: input.UserDescription,
 		Timestamp:       timestamp,
 		MachineID:       input.MachineID,
-		ReportedBy:      "system", // Varsayılan olarak "system" atandı, gerçek kullanıcı bilgisi eklenebilir
+		ReportedBy:      username, // JWT'den alınan kullanıcı adı
 		Asset:           input.Asset,
 	}
 	if err := database.DB.Create(&report).Error; err != nil {
