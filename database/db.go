@@ -27,5 +27,5 @@ func InitDB() {
 
 	DB = db
 
-	db.AutoMigrate(&models.FaultReport{}) // tabloyu otomatik oluşturur
+	db.AutoMigrate(&models.FaultReport{}, &models.User{}) // tabloyu otomatik oluşturur
 }

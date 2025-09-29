@@ -28,3 +28,12 @@ type CreateFaultReportRequest struct {
 	MachineID       string `json:"machine_id"`
 	Asset           string `json:"asset"`
 }
+
+type User struct {
+	ID           uint           `gorm:"primaryKey" json:"id"`
+	Username     string         `json:"username"`
+	PasswordHash string         `json:"-"`
+	CreatedAt    time.Time      `json:"created_at"`
+	UpdatedAt    time.Time      `json:"updated_at"`
+	DeletedAt    gorm.DeletedAt `gorm:"index" json:"-"`
+}
