@@ -3,6 +3,7 @@ package middleware
 import (
 	"help_desk/database"
 	"help_desk/models"
+	"os"
 	"strings"
 
 	"github.com/gofiber/fiber/v2"
@@ -20,7 +21,7 @@ func RequireAuth(c *fiber.Ctx) error {
 	tokenStr := strings.TrimPrefix(authHeader, "Bearer ")
 
 	token, err := jwt.Parse(tokenStr, func(token *jwt.Token) (interface{}, error) {
-		return []byte("JWT_SECRET"), nil
+		return []byte(os.Getenv("JWT_SECRET")), nil
 	})
 	if err != nil || !token.Valid {
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
@@ -35,14 +36,14 @@ func RequireAuth(c *fiber.Ctx) error {
 		})
 	}
 
-	userID, ok := claims["sub"].(float64)
+	userIDFloat, ok := claims["sub"].(float64)
 	if !ok {
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
 			"error": "Invalid token subject",
 		})
 	}
 
-	userID = uint(userIDFloat)
+	userID := uint(userIDFloat)
 
 	var user models.User
 	if err := database.DB.First(&user, userID).Error; err != nil {
