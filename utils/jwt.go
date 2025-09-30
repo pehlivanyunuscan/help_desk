@@ -8,9 +8,8 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 )
 
-var jwtSecret = []byte(os.Getenv("JWT_SECRET"))
-
 func GenerateJWT(user models.User) (string, time.Time, error) {
+	jwtSecret := []byte(os.Getenv("JWT_SECRET"))
 	expiresAt := time.Now().Add(30 * time.Minute)
 	claims := jwt.MapClaims{
 		"sub":      user.ID,
