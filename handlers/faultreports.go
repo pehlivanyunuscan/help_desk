@@ -49,7 +49,7 @@ func CreateFaultReport(c *fiber.Ctx) error {
 	}
 
 	// Başarılı report oluşturma log kaydı
-	log.Printf("User %s created fault report (ID: %d, Title: %s, Machine: %s) at %s", 
+	log.Printf("User %s created fault report (ID: %d, Title: %s, Machine: %s) at %s",
 		username, report.ID, report.Title, report.MachineID, time.Now().Format("2006-01-02 15:04:05"))
 
 	return c.Status(fiber.StatusCreated).JSON(fiber.Map{
