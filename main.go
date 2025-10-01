@@ -24,8 +24,8 @@ func main() {
 	app.Post("/login", handlers.Login)
 
 	app.Post("/send_helpdesk", middleware.RequireAuth, handlers.CreateFaultReport)
-	app.Get("/get_faultreports", handlers.GetFaultReports)
-	app.Get("/get_faultreport/:id", handlers.GetFaultReportByID)
+	app.Get("/get_faultreports", middleware.RequireAuth, handlers.GetFaultReports)
+	app.Get("/get_faultreport/:id", middleware.RequireAuth, handlers.GetFaultReportByID)
 
 	app.Listen(":3000")
 }
