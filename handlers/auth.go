@@ -11,19 +11,21 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-type LoginRequest struct {
-	Username string `json:"username"`
-	Password string `json:"password"`
-}
-
-type LoginResponse struct {
-	Token     string    `json:"token"`
-	ExpiresAt time.Time `json:"expires_at"`
-}
-
+// Login godoc
+// @Summary User login
+// @Description Authenticate user and return JWT token
+// @Tags Authentication
+// @Accept json
+// @Produce json
+// @Param login body models.LoginRequest true "Login credentials"
+// @Success 200 {object} models.LoginResponse
+// @Failure 400 {object} models.InvalidRequestError
+// @Failure 401 {object} models.InvalidCredentialsError
+// @Failure 500 {object} models.TokenGenerationError
+// @Router /login [post]
 func Login(c *fiber.Ctx) error {
 	// Placeholder implementation
-	var req LoginRequest
+	var req models.LoginRequest
 	if err := c.BodyParser(&req); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Invalid request"})
 	}
@@ -52,7 +54,7 @@ func Login(c *fiber.Ctx) error {
 	log.Printf("User %s logged in successfully at %s", user.Username, time.Now().Format("2006-01-02 15:04:05"))
 
 	// Yanıtı döndür
-	return c.JSON(LoginResponse{
+	return c.JSON(models.LoginResponse{
 		Token:     token,
 		ExpiresAt: expiresAt,
 	})

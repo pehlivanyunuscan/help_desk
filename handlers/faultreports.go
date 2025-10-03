@@ -9,6 +9,20 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
+// CreateFaultReport godoc
+// @Summary Create a new fault report
+// @Description Create a new fault report in the system
+// @Tags Fault Reports
+// @Accept json
+// @Produce json
+// @Security BearerAuth
+// @Param fault-report body models.CreateFaultReportRequest true "Fault report data"
+// @Success 201 {object} models.CreateFaultReportSuccess
+// @Failure 400 {object} models.ParseJSONError
+// @Failure 400 {object} models.MissingFieldsError
+// @Failure 401 {object} models.UnauthorizedError
+// @Failure 500 {object} models.CreateReportError
+// @Router /fault-reports [post]
 func CreateFaultReport(c *fiber.Ctx) error {
 	var input models.CreateFaultReportRequest
 	if err := c.BodyParser(&input); err != nil {
@@ -67,6 +81,17 @@ func CreateFaultReport(c *fiber.Ctx) error {
 	})
 }
 
+// GetFaultReports godoc
+// @Summary Get all fault reports
+// @Description Retrieve all fault reports from the system
+// @Tags Fault Reports
+// @Accept json
+// @Produce json
+// @Security BearerAuth
+// @Success 200 {object} models.GetFaultReportsSuccess
+// @Failure 401 {object} models.UnauthorizedError
+// @Failure 500 {object} models.RetrieveReportsError
+// @Router /fault-reports [get]
 func GetFaultReports(c *fiber.Ctx) error {
 	// JWT ile gelen kullanıcı bilgilerini al
 	userIface := c.Locals("user")
@@ -89,6 +114,18 @@ func GetFaultReports(c *fiber.Ctx) error {
 	})
 }
 
+// GetFaultReportByID godoc
+// @Summary Get fault report by ID
+// @Description Retrieve a specific fault report by its ID
+// @Tags Fault Reports
+// @Accept json
+// @Produce json
+// @Security BearerAuth
+// @Param id path string true "Fault Report ID"
+// @Success 200 {object} models.GetFaultReportSuccess
+// @Failure 401 {object} models.UnauthorizedError
+// @Failure 404 {object} models.ReportNotFoundError
+// @Router /fault-reports/{id} [get]
 func GetFaultReportByID(c *fiber.Ctx) error {
 	// JWT ile gelen kullanıcı bilgilerini al
 	userIface := c.Locals("user")
